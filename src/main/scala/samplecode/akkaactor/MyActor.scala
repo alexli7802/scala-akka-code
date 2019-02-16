@@ -39,7 +39,12 @@ package samplecode.akkaactor
 *    stop      : graceful way
 *    PoisonPill: ??
 *    Kill      : throw 'ActorKilledException' and up to the supervisor to stop/restart/resume
-*
+*  - What's the difference between 2 ways of hot-swap behaviors
+*  - When to use 'stash()' and 'unStashAll()' ?
+*  - How to create child actors (best practice: avoid recreating children at each restart) ?
+*    . override def preStart()   : create child actors
+*    . override def postRestart(): disable 'preStart'
+*    . override def preRestart() : remove 'stop all children'
 *
 *
 *
@@ -60,6 +65,12 @@ package samplecode.akkaactor
 *    2. via ActorSystem :
 *  - stop an actor is asynchronous, so if you want to stop multi-actor in a certain order, you need
 *    'akka.pattern.gracefulStop'
+*  - 'trait Stash' overrides 'preRestart()' to 'unstashAll()', so all stashed messages will be
+*    added back to mailbox before restart !
+*  - Compose 'receive' using PartialFunction[Any,Unit].orElse
+*  - Use 'vars' and 'messages' to initialise actors in runtime, then 'become' to ...
+*  - Use class parameters to initialise actors upon configuration
+*
 * */
 
 import akka.actor.{Actor, ActorSystem, Props, ReceiveTimeout}
